@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es" id="top">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PSEINT - Apuntes y Práctica</title>
+  <style>
+    /* Estilos base y modelo de caja */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; padding: 20px 12px;
+      background: #f4f6f9; color: #1f2937;
+      font: 16px/1.6 Arial, Helvetica, sans-serif;
+    }
+
+    /* Hoja central universitaria */
+    .contenedor {
+      max-width: 960px; margin: 0 auto; background: #fff;
+      border: 1px solid #d1d5db; border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06); overflow: hidden;
+    }
+    header { background: #1e3a8a; color: #fff; padding: 26px 32px; border-bottom: 4px solid #0284c7; }
+    header h1 { margin: 0; font-size: 28px; letter-spacing: .5px; }
+
+    /* Navegación */
+    nav { background: #0284c7; padding: 10px 32px; border-bottom: 1px solid #0369a1; }
+    nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+    nav a {
+      display: inline-block; color: #fff; text-decoration: none;
+      font-weight: bold; font-size: 14px; padding: 6px 12px; border-radius: 4px;
+    }
+    nav a:hover { background: #1e3a8a; }
+
+    /* Secciones y tipografía */
+    main { padding: 28px 32px; }
+    section { margin-bottom: 34px; padding-bottom: 22px; border-bottom: 1px solid #e5e7eb; }
+    section:last-of-type { border-bottom: none; margin-bottom: 0; }
+    h2 { color: #1e3a8a; font-size: 21px; margin: 0 0 14px; border-left: 4px solid #0284c7; padding-left: 10px; }
+    h3 { color: #0f172a; font-size: 17px; margin: 18px 0 8px; }
+    abbr[title] { text-decoration: underline dotted; cursor: help; font-weight: bold; }
+    code, pre, textarea { font-family: "Courier New", Consolas, monospace; }
+    code { background: #f1f5f9; padding: 2px 5px; border-radius: 3px; font-size: 14px; }
+
+    /* Cajas compartidas (listas, tarjetas, simulador, formularios) */
+    dl, .paso, figure, .caja-sim, fieldset {
+      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 14px 16px;
+    }
+    dt { font-weight: bold; color: #1e3a8a; margin-top: 6px; }
+    dt:first-child { margin-top: 0; }
+    dd { margin: 0 0 6px 20px; color: #374151; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* Tarjetas de pasos clave con ilustración SVG a la izquierda */
+    .paso {
+      display: flex; align-items: center; gap: 18px;
+      margin: 16px 0; border-left: 4px solid #1e3a8a;
+    }
+    .paso svg {
+      width: 160px; height: 120px; flex-shrink: 0; background: #fff;
+      border: 1px solid #cbd5e1; border-radius: 6px;
+    }
+    .paso-info { font-size: 14px; color: #334155; }
+    .paso-tag {
+      display: inline-block; font-size: 12px; font-weight: bold;
+      text-transform: uppercase; color: #1e3a8a; margin-bottom: 4px;
+    }
+    .paso-info p { margin: 0 0 4px; }
+
+    /* Diagrama y tablas */
+    figure { margin: 18px 0; text-align: center; }
+    figcaption { margin-top: 8px; font-size: 13px; color: #4b5563; }
+    .tabla-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    caption { text-align: left; font-weight: bold; margin-bottom: 8px; color: #374151; }
+    th, td { border: 1px solid #cbd5e1; padding: 9px 12px; text-align: left; }
+    thead th { background: #1e3a8a; color: #fff; }
+    tbody tr:nth-child(even) { background: #f8fafc; }
+    tfoot td { background: #e2e8f0; font-size: 13px; font-weight: bold; }
+
+    /* Controles, simulador y cuestionario */
+    .fila-btn { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    textarea {
+      width: 100%; height: 185px; padding: 12px; border: 1px solid #9ca3af;
+      border-radius: 4px; font-size: 14px; line-height: 1.5; resize: vertical;
+    }
+    input[type="text"] { padding: 7px 10px; border: 1px solid #9ca3af; border-radius: 4px; font-size: 14px; }
+    button { padding: 8px 14px; border: none; border-radius: 4px; font-size: 14px; font-weight: bold; cursor: pointer; }
+    .btn-azul { background: #0284c7; color: #fff; }
+    .btn-azul:hover { background: #0369a1; }
+    .btn-gris { background: #e5e7eb; color: #1f2937; border: 1px solid #cbd5e1; }
+    .btn-gris:hover { background: #d1d5db; }
+
+    #caja-leer {
+      display: none; margin-top: 10px; padding: 10px; background: #fef3c7;
+      border: 1px solid #f59e0b; border-radius: 4px; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    pre#consola {
+      margin: 12px 0 0; padding: 14px; background: #111827; color: #34d399;
+      border-radius: 4px; min-height: 110px; max-height: 210px; overflow-y: auto;
+      font-size: 13px; white-space: pre-wrap;
+    }
+    fieldset { margin-bottom: 14px; }
+    legend { font-weight: bold; color: #1e3a8a; padding: 0 6px; }
+    .pregunta { margin-bottom: 12px; }
+    .pregunta p { margin: 0 0 6px; font-weight: bold; }
+    .opcion { display: block; margin-bottom: 4px; cursor: pointer; }
+    #resultado { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 6px; font-size: 14px; }
+
+    @media (max-width: 700px) {
+      header, nav, main { padding-left: 18px; padding-right: 18px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .paso { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor">
+    <!-- 1. Encabezado y navegación -->
+    <header><h1>PSEINT</h1></header>
+    <nav aria-label="Índice de temas">
+      <ul>
+        <li><a href="#conceptos">Conceptos</a></li>
+        <li><a href="#estructuras">Estructuras</a></li>
+        <li><a href="#diagramas">Diagramas</a></li>
+        <li><a href="#operadores">Operadores</a></li>
+        <li><a href="#practica">Simulador</a></li>
+        <li><a href="#evaluacion">Autoevaluación</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <!-- SECCIÓN 1: CONCEPTOS Y TIPOS DE DATOS -->
+      <section id="conceptos">
+        <h2>1. Conceptos Básicos y Tipos de Datos</h2>
+        <p>
+          <abbr title="Pseudocódigo Intérprete">PSeInt</abbr> es un entorno educativo que permite diseñar <strong>algoritmos</strong> mediante <em>pseudocódigo en español</em> antes de pasar a lenguajes formales. Un algoritmo es una secuencia ordenada y finita de pasos lógicos que transforman datos de entrada en resultados.
+        </p>
+
+        <div class="paso" data-svg="0">
+          <div class="paso-info">
+            <span class="paso-tag">Paso clave 1 · Estructura base</span>
+            <p><strong>Idea principal:</strong> Todo programa comienza con <code>Algoritmo Nombre</code> y cierra con <code>FinAlgoritmo</code>, organizando las instrucciones en orden secuencial.</p>
+          </div>
+        </div>
+
+        <h3>Tipos de Datos Primitivos</h3>
+        <dl>
+          <dt>Entero</dt><dd>Números sin decimales, positivos o negativos (ej. <code>-4</code>, <code>0</code>, <code>25</code>).</dd>
+          <dt>Real</dt><dd>Números con punto decimal para cálculos exactos (ej. <code>3.14</code>, <code>16.5</code>).</dd>
+          <dt>Caracter</dt><dd>Letras, símbolos o cadenas de texto entre comillas (ej. <code>'A'</code>, <code>"Hola"</code>).</dd>
+          <dt>Logico</dt><dd>Valores booleanos de verdad: <code>Verdadero</code> o <code>Falso</code>.</dd>
+        </dl>
+
+        <div class="paso" data-svg="1" style="border-left-color:#0284c7;">
+          <div class="paso-info">
+            <span class="paso-tag">Paso clave 2 · Entrada y salida de datos</span>
+            <p><strong>Idea principal:</strong> Declara cada variable con <code>Definir</code>, muestra indicaciones claras con <code>Escribir</code> y captura datos del teclado con <code>Leer</code>.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: ESTRUCTURAS DE CONTROL -->
+      <section id="estructuras">
+        <h2>2. Estructuras de Control y Buenas Prácticas</h2>
+        <div class="grid-2">
+          <div>
+            <h3>Clasificación de Estructuras</h3>
+            <ul>
+              <li><strong>Secuenciales:</strong> Ejecución lineal paso a paso.</li>
+              <li><strong>Condicionales:</strong> <code>Si - Entonces - Sino</code> y <code>Segun - Hacer</code>.</li>
+              <li><strong>Repetitivas:</strong> <code>Mientras</code>, <code>Repetir - Hasta Que</code> y <code>Para</code>.</li>
+            </ul>
+            <div class="paso" data-svg="2" style="border-left-color:#4f46e5;">
+              <div class="paso-info">
+                <span class="paso-tag">Paso clave 3 · Decisión lógica</span>
+                <p><strong>Idea principal:</strong> En <code>Si - Entonces - Sino</code>, verifica siempre los límites de comparación (ej. <code>&gt;= 18</code>) y cierra el bloque con <code>FinSi</code>.</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Pasos para Resolver un Problema</h3>
+            <ol>
+              <li>Identificar datos de entrada y salida esperada.</li>
+              <li>Declarar variables con su tipo adecuado.</li>
+              <li>Aplicar condiciones o ciclos según la lógica.</li>
+              <li>Verificar los resultados con pruebas de escritorio.</li>
+            </ol>
+            <div class="paso" data-svg="3" style="border-left-color:#0d9488;">
+              <div class="paso-info">
+                <span class="paso-tag">Paso clave 4 · Ciclos iterativos</span>
+                <p><strong>Idea principal:</strong> Asegúrate de que la variable de control avance en cada iteración de <code>Mientras</code> o <code>Para</code> para evitar bucles infinitos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="paso" data-svg="4" style="border-left-color:#2563eb;">
+          <div class="paso-info">
+            <span class="paso-tag">Paso clave 5 · Orden y buenas prácticas</span>
+            <p><strong>Idea principal:</strong> Usa sangría (indentación) dentro de condicionales y bucles, y elige nombres descriptivos como <code>promedio</code> o <code>total</code> para detectar errores rápidamente.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: DIAGRAMAS DE FLUJO -->
+      <section id="diagramas">
+        <h2>3. Diagramas de Flujo</h2>
+        <div class="paso" data-svg="5" style="border-left-color:#0369a1;">
+          <div class="paso-info">
+            <span class="paso-tag">Paso clave 6 · Representación gráfica</span>
+            <p><strong>Idea principal:</strong> Un diagrama de flujo conecta bloques geométricos mediante flechas desde <code>Inicio</code> hasta <code>Fin</code>, mostrando visualmente cada bifurcación.</p>
+          </div>
+        </div>
+
+        <figure>
+          <svg width="100%" height="130" viewBox="0 0 680 130" role="img" aria-label="Simbología estándar de diagramas de flujo">
+            <rect x="20" y="22" width="130" height="42" rx="21" fill="#1e3a8a" />
+            <text x="85" y="47" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Inicio / Fin</text>
+            <text x="85" y="92" text-anchor="middle" fill="#374151" font-size="12">Terminal</text>
+
+            <polygon points="195,22 325,22 310,64 180,64" fill="#0284c7" />
+            <text x="252" y="47" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Leer / Escribir</text>
+            <text x="252" y="92" text-anchor="middle" fill="#374151" font-size="12">Entrada / Salida</text>
+
+            <rect x="355" y="22" width="135" height="42" rx="4" fill="#0d9488" />
+            <text x="422" y="47" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Proceso (&lt;-)</text>
+            <text x="422" y="92" text-anchor="middle" fill="#374151" font-size="12">Asignación</text>
+
+            <polygon points="585,12 655,43 585,74 515,43" fill="#d97706" />
+            <text x="585" y="47" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Decisión (Si)</text>
+            <text x="585" y="92" text-anchor="middle" fill="#374151" font-size="12">Condición V / F</text>
+          </svg>
+          <figcaption><strong>Figura 1:</strong> Símbolos principales empleados en PSeInt para diagramas de flujo.</figcaption>
+        </figure>
+      </section>
+
+      <!-- SECCIÓN 4: TABLA DE OPERADORES -->
+      <section id="operadores">
+        <h2>4. Operadores en PSeInt</h2>
+        <div class="tabla-wrap">
+          <table>
+            <caption>Tabla 1. Operadores aritméticos, relacionales y lógicos</caption>
+            <thead>
+              <tr><th>Categoría</th><th>Símbolos</th><th>Función</th><th>Ejemplo</th></tr>
+            </thead>
+            <tbody>
+              <tr><th>Aritméticos</th><td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code></td><td>Operaciones matemáticas básicas</td><td><code>(8 + 4) / 2</code> &rarr; 6</td></tr>
+              <tr><th>Aritméticos</th><td><code>^</code>, <code>MOD</code></td><td>Potencia y residuo de división entera</td><td><code>10 MOD 3</code> &rarr; 1</td></tr>
+              <tr><th>Relacionales</th><td><code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></td><td>Comparación entre dos valores</td><td><code>18 &gt;= 18</code> &rarr; Verdadero</td></tr>
+              <tr><th>Lógicos</th><td><code>Y</code>, <code>O</code>, <code>NO</code></td><td>Evaluación de expresiones booleanas</td><td><code>(5 &gt; 2) Y (3 &lt; 4)</code> &rarr; Verdadero</td></tr>
+            </tbody>
+            <tfoot>
+              <tr><td colspan="4">Nota: El operador <code>&lt;-</code> asigna un resultado a una variable (ej. <code>total &lt;- a + b</code>).</td></tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5: MINI-SIMULADOR DE PSEINT -->
+      <section id="practica">
+        <h2>5. Mini-Simulador de PSeInt</h2>
+        <div class="paso" data-svg="6">
+          <div class="paso-info">
+            <span class="paso-tag">Paso clave 7 · Prueba en el simulador</span>
+            <p><strong>Idea principal:</strong> Carga un ejemplo de clase o modifica el pseudocódigo para probar distintos valores y observar el resultado en la consola.</p>
+          </div>
+        </div>
+
+        <div class="caja-sim">
+          <div class="fila-btn">
+            <button type="button" class="btn-gris" onclick="cargarEjemplo('suma')">Suma de dos números</button>
+            <button type="button" class="btn-gris" onclick="cargarEjemplo('edad')">Mayor de edad</button>
+            <button type="button" class="btn-gris" onclick="cargarEjemplo('tabla')">Tabla de multiplicar</button>
+          </div>
+
+          <textarea id="editor" spellcheck="false" aria-label="Editor de pseudocódigo PSeInt"></textarea>
+
+          <div class="fila-btn" style="margin-top:10px; margin-bottom:0;">
+            <button type="button" id="btn-run" class="btn-azul">Ejecutar</button>
+            <button type="button" id="btn-clear" class="btn-gris">Limpiar</button>
+          </div>
+
+          <div id="caja-leer">
+            <label for="input-leer" id="lbl-leer" style="font-weight:bold; font-size:14px;">Dato:</label>
+            <input type="text" id="input-leer" placeholder="Ingresa un valor..." />
+            <button type="button" id="btn-ok" class="btn-azul">Aceptar</button>
+          </div>
+
+          <pre id="consola">*** Consola lista. Presiona "Ejecutar" para correr el algoritmo. ***</pre>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 6: AUTOEVALUACIÓN -->
+      <section id="evaluacion">
+        <h2>6. Autoevaluación Rápida</h2>
+        <form id="form-quiz">
+          <fieldset>
+            <legend>Cuestionario de Repaso (3 preguntas)</legend>
+
+            <div class="pregunta">
+              <p>1. ¿Qué palabra clave muestra resultados en la pantalla de PSeInt?</p>
+              <label class="opcion"><input type="radio" name="q1" value="a" /> Leer</label>
+              <label class="opcion"><input type="radio" name="q1" value="b" /> Escribir</label>
+              <label class="opcion"><input type="radio" name="q1" value="c" /> Definir</label>
+            </div>
+
+            <div class="pregunta">
+              <p>2. ¿Qué tipo de dato almacena números con decimales como 14.5?</p>
+              <label class="opcion"><input type="radio" name="q2" value="a" /> Entero</label>
+              <label class="opcion"><input type="radio" name="q2" value="b" /> Logico</label>
+              <label class="opcion"><input type="radio" name="q2" value="c" /> Real</label>
+            </div>
+
+            <div class="pregunta" style="margin-bottom:0;">
+              <p>3. ¿Cuál de las siguientes instrucciones corresponde a un ciclo repetitivo?</p>
+              <label class="opcion"><input type="radio" name="q3" value="a" /> Para - Hasta - Hacer</label>
+              <label class="opcion"><input type="radio" name="q3" value="b" /> Si - Entonces - Sino</label>
+              <label class="opcion"><input type="radio" name="q3" value="c" /> Algoritmo - FinAlgoritmo</label>
+            </div>
+          </fieldset>
+          <button type="submit" class="btn-azul">Calificar</button>
+        </form>
+        <div id="resultado" role="status"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // 1. Ilustraciones SVG compactas para los 7 Pasos Clave
+    const svgs = [
+      // Paso 1: Estructura Algoritmo
+      `<rect x="6" y="6" width="148" height="108" rx="6" fill="#eff6ff"/><rect x="18" y="14" width="124" height="20" rx="4" fill="#1e3a8a"/><text x="80" y="27" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold" font-family="monospace">Algoritmo Inicio</text><rect x="26" y="41" width="108" height="18" rx="3" fill="#fff" stroke="#0284c7"/><text x="80" y="53" text-anchor="middle" fill="#0369a1" font-size="9" font-family="monospace">Definir x Como Real</text><rect x="26" y="64" width="108" height="18" rx="3" fill="#fff" stroke="#0d9488"/><text x="80" y="76" text-anchor="middle" fill="#0f766e" font-size="9" font-family="monospace">x &lt;- 10 * 2</text><rect x="18" y="88" width="124" height="20" rx="4" fill="#1e3a8a"/><text x="80" y="101" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold" font-family="monospace">FinAlgoritmo</text>`,
+      // Paso 2: Pantalla y teclado E/S
+      `<rect x="6" y="6" width="148" height="108" rx="6" fill="#f0f9ff"/><rect x="24" y="12" width="112" height="50" rx="5" fill="#0f172a" stroke="#0284c7" stroke-width="1.5"/><text x="32" y="29" fill="#38bdf8" font-size="8.5" font-family="monospace">&gt; Ingrese dato:</text><text x="32" y="44" fill="#34d399" font-size="8.5" font-family="monospace">&gt; Salida: OK</text><path d="M52,88 L52,70 M48,74 L52,69 L56,74" fill="none" stroke="#0284c7" stroke-width="1.8"/><text x="32" y="82" fill="#0369a1" font-size="8.5" font-weight="bold">Leer</text><path d="M108,69 L108,87 M104,83 L108,88 L112,83" fill="none" stroke="#0d9488" stroke-width="1.8"/><text x="114" y="82" fill="#0f766e" font-size="8.5" font-weight="bold">Escribir</text><rect x="28" y="92" width="104" height="16" rx="3" fill="#e2e8f0" stroke="#475569"/>`,
+      // Paso 3: Bifurcación Si-Entonces
+      `<rect x="6" y="6" width="148" height="108" rx="6" fill="#eef2ff"/><polygon points="80,14 114,38 80,62 46,38" fill="#4f46e5"/><text x="80" y="41" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold" font-family="monospace">edad&gt;=18</text><polyline points="46,38 32,38 32,78" fill="none" stroke="#16a34a" stroke-width="1.8"/><text x="26" y="33" fill="#15803d" font-size="8.5" font-weight="bold">V</text><rect x="12" y="80" width="54" height="22" rx="4" fill="#dcfce7" stroke="#16a34a"/><text x="39" y="94" text-anchor="middle" fill="#14532d" font-size="8.5" font-weight="bold">Entonces</text><polyline points="114,38 128,38 128,78" fill="none" stroke="#dc2626" stroke-width="1.8"/><text x="131" y="33" fill="#b91c1c" font-size="8.5" font-weight="bold">F</text><rect x="94" y="80" width="54" height="22" rx="4" fill="#fee2e2" stroke="#dc2626"/><text x="121" y="94" text-anchor="middle" fill="#7f1d1d" font-size="8.5" font-weight="bold">Sino</text>`,
+      // Paso 4: Ciclo circular
+      `<rect x="6" y="6" width="148" height="108" rx="6" fill="#f0fdfa"/><path d="M52,30 A32,32 0 1,1 44,74" fill="none" stroke="#0d9488" stroke-width="3" stroke-linecap="round"/><polygon points="40,69 49,71 43,80" fill="#0d9488"/><rect x="48" y="43" width="64" height="26" rx="4" fill="#fff" stroke="#0d9488"/><text x="80" y="54" text-anchor="middle" fill="#0f766e" font-size="8.5" font-weight="bold" font-family="monospace">i &lt;- 1..10</text><text x="80" y="65" text-anchor="middle" fill="#334155" font-size="8" font-family="monospace">i &lt;- i + 1</text><rect x="28" y="90" width="104" height="17" rx="3" fill="#ccfbf1"/><text x="80" y="102" text-anchor="middle" fill="#115e59" font-size="8.5" font-weight="bold">Para / Mientras</text>`,
+      // Paso 5: Lupa revisando código indentado
+      `<rect x="6" y="6" width="148" height="108" rx="6" fill="#eff6ff"/><rect x="18" y="14" width="92" height="92" rx="4" fill="#fff" stroke="#93c5fd"/><line x1="26" y1="28" x2="74" y2="28" stroke="#1e3a8a" stroke-width="2.5"/><line x1="36" y1="42" x2="92" y2="42" stroke="#0284c7" stroke-width="2.5"/><line x1="46" y1="56" x2="96" y2="56" stroke="#0d9488" stroke-width="2.5"/><line x1="36" y1="70" x2="86" y2="70" stroke="#0284c7" stroke-width="2.5"/><line x1="26" y1="84" x2="72" y2="84" stroke="#1e3a8a" stroke-width="2.5"/><circle cx="114" cy="54" r="21" fill="#dbeafe" stroke="#2563eb" stroke-width="2.2"/><polyline points="105,54 111,60 124,47" fill="none" stroke="#16a34a" stroke-width="2.5"/><line x1="129" y1="69" x2="143" y2="85" stroke="#1e3a8a" stroke-width="4" stroke-linecap="round"/>`,
+      // Paso 6: Flujo conectado
+      `<rect x="6" y="6" width="148" height="108" rx="6" fill="#f0f9ff"/><rect x="52" y="12" width="56" height="16" rx="8" fill="#1e3a8a"/><text x="80" y="23" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">Inicio</text><line x1="80" y1="28" x2="80" y2="36" stroke="#475569" stroke-width="1.5"/><polygon points="50,36 116,36 110,52 44,52" fill="#0284c7"/><text x="80" y="47" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">Leer n</text><line x1="80" y1="52" x2="80" y2="60" stroke="#475569" stroke-width="1.5"/><polygon points="80,60 106,73 80,86 54,73" fill="#d97706"/><text x="80" y="76" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="bold">n &gt; 0</text><line x1="80" y1="86" x2="80" y2="94" stroke="#475569" stroke-width="1.5"/><rect x="52" y="94" width="56" height="16" rx="8" fill="#1e3a8a"/><text x="80" y="105" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">Fin</text>`,
+      // Paso 7: Consola de ejecución
+      `<rect x="6" y="6" width="148" height="108" rx="6" fill="#eff6ff"/><rect x="16" y="14" width="128" height="92" rx="5" fill="#111827" stroke="#1e3a8a" stroke-width="1.5"/><rect x="16" y="14" width="128" height="20" rx="4" fill="#1e3a8a"/><circle cx="28" cy="24" r="6" fill="#16a34a"/><polygon points="26.5,21 31.5,24 26.5,27" fill="#fff"/><text x="40" y="27" fill="#fff" font-size="8.5" font-weight="bold">Ejecutar.psc</text><text x="24" y="50" fill="#93c5fd" font-size="8" font-family="monospace">&gt; Ejecutando...</text><text x="24" y="66" fill="#34d399" font-size="8.5" font-family="monospace">&gt; Resultado: 20</text><text x="24" y="84" fill="#fbbf24" font-size="8" font-family="monospace">*** Finalizado ***</text>`
+    ];
+
+    document.querySelectorAll(".paso[data-svg]").forEach(el => {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 160 120");
+      svg.innerHTML = svgs[el.dataset.svg];
+      el.prepend(svg);
+    });
+
+    // 2. Ejemplos y simulador compacto de PSeInt
+    const ejemplos = {
+      suma: `Algoritmo SumaDosNumeros\n    Definir a, b, suma Como Real;\n    Escribir 'Ingrese el primer numero:';\n    Leer a;\n    Escribir 'Ingrese el segundo numero:';\n    Leer b;\n    suma <- a + b;\n    Escribir 'La suma es: ', suma;\nFinAlgoritmo`,
+      edad: `Algoritmo MayorDeEdad\n    Definir edad Como Entero;\n    Escribir 'Ingrese su edad:';\n    Leer edad;\n    Si edad >= 18 Entonces\n        Escribir 'Eres mayor de edad.';\n    Sino\n        Escribir 'Eres menor de edad.';\n    FinSi\nFinAlgoritmo`,
+      tabla: `Algoritmo TablaMultiplicar\n    Definir num, i, res Como Entero;\n    Escribir 'Numero de tabla a mostrar:';\n    Leer num;\n    Para i <- 1 Hasta 10 Hacer\n        res <- num * i;\n        Escribir num, ' x ', i, ' = ', res;\n    FinPara\nFinAlgoritmo`
+    };
+
+    const editor = document.getElementById("editor");
+    const consola = document.getElementById("consola");
+    const cajaLeer = document.getElementById("caja-leer");
+    const inputLeer = document.getElementById("input-leer");
+    let ctx = null;
+
+    function cargarEjemplo(clave) {
+      editor.value = ejemplos[clave];
+      cajaLeer.style.display = "none";
+      consola.textContent = "*** Ejemplo cargado. Presiona 'Ejecutar'. ***";
+    }
+    cargarEjemplo("suma");
+
+    const log = txt => { consola.textContent += "\n" + txt; consola.scrollTop = consola.scrollHeight; };
+
+    function evalExpr(expr, vars) {
+      const js = expr.trim().replace(/\bMOD\b/gi, "%").replace(/\^/g, "**").replace(/<>/g, "!==")
+        .replace(/([^<>!])=([^=])/g, "$1===$2").replace(/\bY\b/gi, "&&").replace(/\bO\b/gi, "||").replace(/\bNO\b/gi, "!")
+        .split(/('[^']*'|"[^"]*")/g).map((p, i) => i % 2 ? p : p.replace(/\b[a-zA-Z_]\w*\b/g, id =>
+          id in vars ? (typeof vars[id] === "string" ? JSON.stringify(vars[id]) : vars[id]) : id
+        )).join("");
+      return Function('"use strict";return(' + js + ')')();
+    }
+
+    function pasoSimulador() {
+      try {
+        while (ctx && ctx.pc < ctx.lines.length) {
+          const line = ctx.lines[ctx.pc].trim().replace(/;$/, "");
+          if (!line || line.startsWith("//")) { ctx.pc++; continue; }
+
+          if (/^Algoritmo\b/i.test(line)) { log("*** Ejecución iniciada ***"); ctx.pc++; }
+          else if (/^FinAlgoritmo\b/i.test(line)) { log("*** Ejecución finalizada ***"); ctx = null; return; }
+          else if (/^Definir\s+(.+)\s+Como\s+\w+$/i.test(line)) {
+            RegExp.$1.split(",").forEach(v => ctx.vars[v.trim()] = 0);
+            ctx.pc++;
+          } else if (/^Escribir\s+(.+)$/i.test(line)) {
+            const args = RegExp.$1.match(/('[^']*'|"[^"]*"|[^,]+)/g) || [];
+            log("> " + args.map(a => evalExpr(a, ctx.vars)).join(""));
+            ctx.pc++;
+          } else if (/^Leer\s+([a-zA-Z_]\w*)$/i.test(line)) {
+            ctx.waitVar = RegExp.$1;
+            document.getElementById("lbl-leer").textContent = "Leer " + ctx.waitVar + ":";
+            inputLeer.value = ""; cajaLeer.style.display = "flex"; inputLeer.focus();
+            return;
+          } else if (/^Si\s+(.+)\s+Entonces$/i.test(line)) {
+            if (evalExpr(RegExp.$1, ctx.vars)) ctx.pc++;
+            else {
+              while (++ctx.pc < ctx.lines.length && !/^(Sino|FinSi)$/i.test(ctx.lines[ctx.pc].trim().replace(/;$/, "")));
+              ctx.pc++;
+            }
+          } else if (/^Sino$/i.test(line)) {
+            while (++ctx.pc < ctx.lines.length && !/^FinSi$/i.test(ctx.lines[ctx.pc].trim().replace(/;$/, "")));
+            ctx.pc++;
+          } else if (/^FinSi$/i.test(line)) { ctx.pc++; }
+          else if (/^Para\s+([a-zA-Z_]\w*)\s*<-\s*(.+?)\s+Hasta\s+(.+?)\s+Hacer$/i.test(line)) {
+            const [, v, ini, fin] = line.match(/^Para\s+([a-zA-Z_]\w*)\s*<-\s*(.+?)\s+Hasta\s+(.+?)\s+Hacer$/i);
+            ctx.vars[v] = Number(evalExpr(ini, ctx.vars));
+            ctx.loop = { start: ctx.pc, v, max: Number(evalExpr(fin, ctx.vars)) };
+            ctx.pc++;
+          } else if (/^FinPara$/i.test(line)) {
+            if (ctx.loop && ++ctx.vars[ctx.loop.v] <= ctx.loop.max) ctx.pc = ctx.loop.start + 1;
+            else { ctx.loop = null; ctx.pc++; }
+          } else if (/^([a-zA-Z_]\w*)\s*<-\s*(.+)$/.test(line)) {
+            const [, v, ex] = line.match(/^([a-zA-Z_]\w*)\s*<-\s*(.+)$/);
+            ctx.vars[v] = evalExpr(ex, ctx.vars);
+            ctx.pc++;
+          } else { throw new Error("Sintaxis no válida -> " + line); }
+        }
+      } catch (e) { log("Error: " + e.message); cajaLeer.style.display = "none"; ctx = null; }
+    }
+
+    document.getElementById("btn-run").onclick = () => {
+      consola.textContent = ""; cajaLeer.style.display = "none";
+      ctx = { lines: editor.value.split("\n"), pc: 0, vars: {}, waitVar: null, loop: null };
+      pasoSimulador();
+    };
+    document.getElementById("btn-clear").onclick = () => {
+      cajaLeer.style.display = "none"; consola.textContent = "*** Consola limpia. ***";
+    };
+    const enviarDato = () => {
+      if (!ctx || !ctx.waitVar) return;
+      const val = inputLeer.value.trim();
+      ctx.vars[ctx.waitVar] = val !== "" && !isNaN(Number(val)) ? Number(val) : val;
+      log("  [Entrada: " + ctx.vars[ctx.waitVar] + "]");
+      ctx.waitVar = null; ctx.pc++; cajaLeer.style.display = "none";
+      pasoSimulador();
+    };
+    document.getElementById("btn-ok").onclick = enviarDato;
+    inputLeer.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); enviarDato(); } };
+// 3. Evaluación del cuestionario
+    document.getElementById("form-quiz").onsubmit = e => {
+      e.preventDefault();
+      const claves = { q1: "b", q2: "c", q3: "a" };
+      let puntos = 0;
+      Object.keys(claves).forEach(q => {
+        const sel = e.target.querySelector(`input[name="${q}"]:checked`);
+        if (sel && sel.value === claves[q]) puntos++;
+      });
+      const res = document.getElementById("resultado");
+      res.style.display = "block";
+      res.style.background = puntos === 3 ? "#dcfce7" : "#fef9c3";
+      res.style.border = puntos === 3 ? "1px solid #16a34a" : "1px solid #ca8a04";
+      res.innerHTML = `<strong>Puntaje obtenido: ${puntos} / 3 puntos.</strong> ${puntos === 3 ? "¡Excelente dominio de PSeInt!" : "Repasa las tarjetas de pasos clave e inténtalo de nuevo."}`;
+    };
+  </script>
+</body>
+</html>
